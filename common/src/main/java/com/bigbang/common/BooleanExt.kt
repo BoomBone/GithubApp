@@ -1,23 +1,22 @@
 package com.bigbang.common
 
-sealed class BooleanExt
+sealed class BooleanExt<out T>
 
-object Otherwise : BooleanExt()
-class WithData : BooleanExt()
+object Otherwise : BooleanExt<Nothing>()
+class WithData<T>(val data: T) : BooleanExt<T>()
 
-inline fun Boolean.yes(block: () -> Unit) =
+inline fun <T> Boolean.yes(block: () -> T) =
         when {
             this -> {
-                block()
-                WithData()
+                WithData(block())
             }
             else -> {
                 Otherwise
             }
         }
 
-fun BooleanExt.otherwise(block: () -> Unit) =
+inline fun <T> BooleanExt<T>.otherwise(block: () -> T): T =
         when (this) {
-            is Otherwise -> block
-            is WithData -> Unit
+            is Otherwise -> block()
+            is WithData -> this.data
         }
