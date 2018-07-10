@@ -15,6 +15,16 @@ inline fun <T> Boolean.yes(block: () -> T) =
             }
         }
 
+inline fun <T> Boolean.no(block: () -> T) =
+        when {
+            this -> {
+                Otherwise
+            }
+            else -> {
+                WithData(block())
+            }
+        }
+
 inline fun <T> BooleanExt<T>.otherwise(block: () -> T): T =
         when (this) {
             is Otherwise -> block()
